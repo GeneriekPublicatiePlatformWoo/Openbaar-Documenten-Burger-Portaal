@@ -1,0 +1,6 @@
+@ODBP.Server_HostAddress = http://localhost:5252
+
+GET {{ODBP.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
