@@ -15,5 +15,8 @@ export default defineConfig({
     proxy: {
       '/api': 'http://localhost:62231'
     }
+  },
+  build: {
+    assetsInlineLimit: 0
   }
 })
