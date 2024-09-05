@@ -28,6 +28,7 @@ try
 
     var app = builder.Build();
 
+    app.UseSerilogRequestLogging();
     app.UseDefaultFiles();
     app.UseOdbpStaticFiles();
     app.UseOdbpSecurityHeaders();
