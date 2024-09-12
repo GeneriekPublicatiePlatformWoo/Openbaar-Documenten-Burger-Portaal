@@ -1,0 +1,54 @@
+:root {
+  // colors
+  --color-primary: #415a77;
+  --color-primary-hover: #4b75aa;
+  --color-secondary: #eceff1;
+  --color-tertiary: #778da9;
+  --color-headings: #1b263b;
+  --color-accent: #acc8e5;
+  --color-accent-text: var(--color-headings);
+  --color-accent-hover: #cfe4f7;
+  --color-accent-hover-text: var(--color-headings);
+  --color-error: #ff8585; // #ff8585
+  --color-error-hover: #ffb8b8;
+  --color-error-hover-text: var(--color-headings);
+  --color-warning: orange;
+  --color-success: #89cf5e;
+  --color-white: #fff;
+  --color-white-hover: #e4e8ee;
+  --color-black: var(--color-headings);
+  --sidebar-color-1: var(--color-headings);
+  --sidebar-color-2: var(--color-primary);
+  --color-grey: #999;
+
+  // spacing
+  --container-width: 80rem;
+  --container-padding: max(var(--spacing-large), calc(50vw - var(--container-width) / 2));
+  --section-width: 30.75rem;
+  --section-width-small: 20rem;
+  --section-width-large: 60rem;
+  --spacing-extrasmall: 0.25rem;
+  --spacing-small: 0.5rem;
+  --spacing-default: 1rem;
+  --spacing-large: 2rem;
+  --spacing-extralarge: 6rem;
+  --header-height: 6rem;
+  --text-margin: 1.5rem;
+  --line-height-default: 1.5rem;
+
+  // other
+  --radius-default: 0.4rem;
+  --radius-large: 1.5rem;
+  --height-body: 100vh;
+  --shadow-default: 0 0 4.5714px 0 rgb(0 0 0 / 20%);
+  --outline-color: var(--color-black);
+  --outline-width: 1px;
+  --outline-style: auto;
+  --outline-offset: 3px;
+
+  --font-bold: 600;
+  --font-small: 0.75rem;
+  --font-medium: 1rem;
+  --font-large: 1.25rem;
+  --font-extralarge: 2rem;
+}
