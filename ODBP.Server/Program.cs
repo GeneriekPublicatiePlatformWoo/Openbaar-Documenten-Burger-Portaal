@@ -17,6 +17,7 @@ logger.Information("Starting up");
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+    builder.Host.UseSerilog(logger);
 
     // Add services to the container.
 
