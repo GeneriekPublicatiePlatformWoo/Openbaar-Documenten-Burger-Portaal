@@ -8,6 +8,7 @@ import App from "./App.vue";
 import router from "./router";
 
 import {
+  SkipLink as UtrechtSkipLink,
   Article as UtrechtArticle,
   Heading as UtrechtHeading,
   Paragraph as UtrechtParagraph,
@@ -24,6 +25,7 @@ const app = createApp(App);
 app.use(router);
 
 app
+  .component("UtrechtSkipLink", UtrechtSkipLink)
   .component("UtrechtArticle", UtrechtArticle)
   .component("UtrechtHeading", UtrechtHeading)
   .component("UtrechtParagraph", UtrechtParagraph)

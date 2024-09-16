@@ -10,7 +10,7 @@ import TheFooter from "./components/TheFooter.vue";
 
   <the-nav />
 
-  <main>
+  <main id="main">
     <router-view />
   </main>
 

@@ -1,5 +1,9 @@
 <template>
   <header>
+    <p><utrecht-skip-link href="#main">Naar inhoud</utrecht-skip-link></p>
+
+    <p><utrecht-skip-link href="#menu">Naar menu</utrecht-skip-link></p>
+
     <svg width="300" height="100" xmlns="http://www.w3.org/2000/svg">
       <rect width="90" height="100" fill="white" />
 

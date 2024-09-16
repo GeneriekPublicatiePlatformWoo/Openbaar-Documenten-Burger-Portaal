@@ -25,7 +25,11 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to) => {
-  document.title = `${to.meta?.title || ''} | ${import.meta.env.VITE_APP_TITLE}`;
+  document.title = `${to.meta?.title || ""} | ${import.meta.env.VITE_APP_TITLE}`;
+
+  document.body.setAttribute("tabindex", "-1");
+  document.body.focus();
+  document.body.removeAttribute("tabindex");
 });
 
 export default router;
