@@ -9,7 +9,13 @@
     </utrecht-paragraph>
 
     <utrecht-paragraph>
-      <utrecht-button appearance="primary-action-button">Zoeken</utrecht-button>
+      <!-- <utrecht-button appearance="primary-action-button">Zoeken</utrecht-button> -->
+
+      <router-link
+        :to="{ name: 'zoeken' }"
+        class="utrecht-button-link utrecht-button-link--html-a utrecht-button-link--primary-action"
+        >Zoeken</router-link
+      >
     </utrecht-paragraph>
 
     <utrecht-heading :level="2">Wat kunt u hier vinden?</utrecht-heading>
