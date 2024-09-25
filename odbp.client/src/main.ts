@@ -1,11 +1,17 @@
-import './assets/main.css'
+import "@utrecht/design-tokens/dist/index.css";
+import "@utrecht/component-library-css";
+import "./assets/design-tokens.scss";
+import "./assets/main.scss";
 
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
+import { createApp } from "vue";
+import App from "./App.vue";
+import router from "./router";
+import { registerComponents } from "@/components/register";
 
-const app = createApp(App)
+const app = createApp(App);
 
-app.use(router)
+app.use(router);
 
-app.mount('#app')
+registerComponents(app);
+
+app.mount("#app");

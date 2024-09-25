@@ -1,0 +1,29 @@
+html,
+body,
+#app {
+  height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+}
+
+#app {
+  display: grid;
+  grid-template-columns: 1fr min(var(--container-width), 90%) 1fr;
+  grid-template-rows: auto auto 1fr auto;
+}
+
+#app > * {
+  grid-column: 2;
+  background-color: var(--color-white);
+  padding: var(--spacing-default);
+}
+
+.utrecht-theme {
+  --utrecht-space-around: 1;
+}
