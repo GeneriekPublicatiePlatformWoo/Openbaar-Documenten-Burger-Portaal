@@ -1,4 +1,5 @@
 ﻿using ODBP.Apis.Odrc;
+using ODBP.Features.Sitemap;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Json;
@@ -24,6 +25,7 @@ try
     builder.Services.AddHealthChecks();
     builder.Services.AddHttpClient();
     builder.Services.AddSingleton<IOdrcClientFactory, OdrcClientFactory>();
+    builder.Services.AddBaseUri();
 
     var app = builder.Build();
 
