@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using ODBP.Apis.Odrc;
+using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Json;
 
@@ -21,6 +22,8 @@ try
 
     builder.Services.AddControllers();
     builder.Services.AddHealthChecks();
+    builder.Services.AddHttpClient();
+    builder.Services.AddSingleton<IOdrcClientFactory, OdrcClientFactory>();
 
     var app = builder.Build();
 
