@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ODBP.Data;
-using Serilog;
+﻿using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Json;
 
@@ -24,9 +22,6 @@ try
     builder.Services.AddControllers();
     builder.Services.AddHealthChecks();
 
-    var connStr = $"Username={builder.Configuration["POSTGRES_USER"]};Password={builder.Configuration["POSTGRES_PASSWORD"]};Host={builder.Configuration["POSTGRES_HOST"]};Database={builder.Configuration["POSTGRES_DB"]};Port={builder.Configuration["POSTGRES_PORT"]}";
-    builder.Services.AddDbContext<OdbpDbContext>(opt => opt.UseNpgsql(connStr));
-
     var app = builder.Build();
 
     app.UseSerilogRequestLogging();
@@ -37,11 +32,6 @@ try
     app.MapControllers();
     app.MapHealthChecks("/healthz");
     app.MapFallbackToIndexHtml();
-
-    await using (var scope = app.Services.CreateAsyncScope())
-    {
-        await scope.ServiceProvider.GetRequiredService<OdbpDbContext>().Database.MigrateAsync();
-    }
 
     app.Run();
 }
