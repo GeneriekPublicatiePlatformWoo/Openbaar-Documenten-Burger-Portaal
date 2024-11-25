@@ -1,12 +1,16 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using ODBP.Apis.Odrc;
+using ODBP.Config;
 
 namespace ODBP.Features.Sitemap.SitemapInstances
 {
     [ApiController]
+    [OutputCache(PolicyName = OutputCachePolicies.Sitemap)]
     public class SitemapController(IOdrcClientFactory odrcClientFactory, BaseUri baseUri)
     {
         const string ApiVersion = "v1";

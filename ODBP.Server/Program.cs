@@ -1,4 +1,5 @@
 ﻿using ODBP.Apis.Odrc;
+using ODBP.Config;
 using ODBP.Features.Sitemap;
 using Serilog;
 using Serilog.Events;
@@ -26,12 +27,14 @@ try
     builder.Services.AddHttpClient();
     builder.Services.AddSingleton<IOdrcClientFactory, OdrcClientFactory>();
     builder.Services.AddBaseUri();
+    builder.Services.AddOutputCache(x=> x.AddPolicy(OutputCachePolicies.Sitemap, b=> b.Expire(TimeSpan.FromHours(23))));
 
     var app = builder.Build();
 
     app.UseSerilogRequestLogging(x=> x.Logger = logger);
     app.UseDefaultFiles();
     app.UseOdbpStaticFiles();
+    app.UseOutputCache();
     app.UseOdbpSecurityHeaders();
 
     app.MapControllers();
