@@ -34,7 +34,12 @@ try
     app.UseSerilogRequestLogging();
     app.UseDefaultFiles();
     app.UseOdbpStaticFiles();
-    app.UseOutputCache();
+
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseOutputCache();
+    }
+
     app.UseOdbpSecurityHeaders();
 
     app.MapControllers();
