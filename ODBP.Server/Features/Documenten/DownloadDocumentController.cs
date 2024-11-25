@@ -11,7 +11,7 @@ namespace ODBP.Features.Documenten
         const string Gepubliceerd = "gepubliceerd";
 
         [HttpGet("/api/{version}/documenten/{id}/download")]
-        public async Task<IActionResult> Get(string version, string id, CancellationToken token)
+        public async Task<IActionResult> Get(string version, Guid id, CancellationToken token)
         {
             using var client = clientFactory.Create("Publicatiestatus checken van document");
             using var documentResponse = await client.GetAsync($"/api/{version}/documenten/{id}", HttpCompletionOption.ResponseContentRead, token);
