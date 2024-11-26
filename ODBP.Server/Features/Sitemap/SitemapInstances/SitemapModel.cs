@@ -14,6 +14,9 @@ public class Publicatie
     [XmlElement("loc")]
     public required string Loc { get; init; }
 
+    [XmlElement("lastmod")]
+    public required string Lastmod { get; init; }
+
     [XmlElement(ElementName = "Document", Namespace = DiwooConstants.Namespace)]
     public required Document Document { get; init; }
 }

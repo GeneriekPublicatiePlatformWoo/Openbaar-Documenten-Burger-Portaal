@@ -2,9 +2,9 @@
 
 namespace ODBP.Features.Sitemap.SitemapInstances
 {
-    public class DiwooXmlResult(SitemapModel model) : XmlResult<SitemapModel>(model, Namespaces)
+    public class DiwooXmlResult(SitemapModel model) : XmlResult<SitemapModel>(model, s_namespaces)
     {
-        public static readonly XmlSerializerNamespaces Namespaces = GetNamespaces();
+        private static readonly XmlSerializerNamespaces s_namespaces = GetNamespaces();
 
         private static XmlSerializerNamespaces GetNamespaces()
         {
