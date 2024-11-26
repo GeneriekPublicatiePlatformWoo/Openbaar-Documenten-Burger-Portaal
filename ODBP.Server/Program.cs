@@ -5,9 +5,9 @@ using Serilog.Formatting.Json;
 
 using var logger = new LoggerConfiguration()
     .MinimumLevel.Information()
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-    .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information) //logeventlevel information voor Microsoft.AspNetCore.Authentication namespace omdat deze namespace de unauthorizations gooit, voorbeeld: Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler: Information: AuthenticationScheme: Bearer was challenged.
-    .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
+    .MinimumLevel.Override("Microsoft.AspNetCore.Mvc", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Warning)
     .WriteTo.Console(new JsonFormatter())
     .CreateLogger();
 
@@ -27,7 +27,7 @@ try
 
     var app = builder.Build();
 
-    app.UseSerilogRequestLogging();
+    app.UseSerilogRequestLogging(x=> x.Logger = logger);
     app.UseDefaultFiles();
     app.UseOdbpStaticFiles();
     app.UseOdbpSecurityHeaders();
