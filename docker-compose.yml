@@ -1,28 +1,8 @@
 services:
   odbp:
-    environment:
-      - POSTGRES_HOST=postgres-db
-      - POSTGRES_DB=ODBP
-      - POSTGRES_PORT=5432
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=localdev
     image: ${DOCKER_REGISTRY-}odbp
     build:
       context: .
       dockerfile: ODBP.Server/Dockerfile
     ports:
-      - "62231:8080"
-    depends_on:
-      - postgres-db
-  postgres-db:
-    image: postgres
-    volumes:
-      - db:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_PASSWORD=localdev
-    restart: always
-    ports:
-      - "5432"
-
-volumes:
-  db:
+      - "8080"
