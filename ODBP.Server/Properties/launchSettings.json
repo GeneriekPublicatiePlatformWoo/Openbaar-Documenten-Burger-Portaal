@@ -3,7 +3,7 @@
     "http": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/weatherforecast",
+      "launchUrl": "api/sitemap.xml",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
@@ -14,7 +14,7 @@
     "Container (Dockerfile)": {
       "commandName": "Docker",
       "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/api/weatherforecast",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/api/sitemap.xml",
       "environmentVariables": {
         "ASPNETCORE_HTTP_PORTS": "8080"
       },
