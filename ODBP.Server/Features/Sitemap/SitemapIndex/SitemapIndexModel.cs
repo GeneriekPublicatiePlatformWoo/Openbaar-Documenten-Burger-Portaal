@@ -15,6 +15,9 @@ public class SitemapLink
     [XmlElement("loc")]
     public required string Loc { get; set; }
 
+    /// <summary>
+    /// Moet voldoen aan https://www.w3.org/TR/NOTE-datetime
+    /// </summary>
     [XmlElement("lastmod")]
     public string LastMod { get; set; } = DateTimeOffset.Now.ToString("o", CultureInfo.InvariantCulture);
 }

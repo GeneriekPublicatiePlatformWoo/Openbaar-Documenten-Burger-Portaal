@@ -14,6 +14,9 @@ public class Publicatie
     [XmlElement("loc")]
     public required string Loc { get; init; }
 
+    /// <summary>
+    /// Moet voldoen aan https://www.w3.org/TR/NOTE-datetime
+    /// </summary>
     [XmlElement("lastmod")]
     public required string Lastmod { get; init; }
 
