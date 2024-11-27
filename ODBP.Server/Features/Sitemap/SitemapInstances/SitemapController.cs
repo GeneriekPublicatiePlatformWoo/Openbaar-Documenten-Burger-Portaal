@@ -7,7 +7,7 @@ using ODBP.Apis.Odrc;
 namespace ODBP.Features.Sitemap.SitemapInstances
 {
     [ApiController]
-    public class SitemapController(IOdrcClientFactory clientFactory, BaseUri baseUri)
+    public class SitemapController(IOdrcClientFactory odrcClientFactory, BaseUri baseUri)
     {
         const string ApiVersion = "v1";
         const string ApiRoot = $"/api/{ApiVersion}";
@@ -20,41 +20,58 @@ namespace ODBP.Features.Sitemap.SitemapInstances
         [HttpGet(ApiRoutes.Sitemap)]
         public async Task<IActionResult> Get(CancellationToken token)
         {
-            using var client = clientFactory.Create("sitemap opbouwen");
-            var organisatiesTask = GetWaardelijst(client, OrganisatiesPath, token);
-            var informatiecategorieenTask = GetWaardelijst(client, InformatieCategorieenPath, token);
+            using var odrcClient = odrcClientFactory.Create(handeling: "sitemap opbouwen");
 
-            var publicaties = await GetPublicaties(client, token);
+            // de documenten bevatten alleen de uuid van de publicatie die erbij hoort
+            // de publicaties bevatten alleen de uuid van de organisatie / informatiecategorieen die erbij horen
+            // voor de sitemap hebben we de naam en identifier nodig van organisaties / informatiecategorieen
+            // daarom halen we die los op, zodat we ze per document kunnen opzoeken
+            var organisatiesTask = GetWaardelijstDictionary(odrcClient, OrganisatiesPath, token);
+            var informatiecategorieenTask = GetWaardelijstDictionary(odrcClient, InformatieCategorieenPath, token);
+
+            var gepubliceerdePublicaties = await GetGepubliceerdePublicatieDictionary(odrcClient, token);
             var organisaties = await organisatiesTask;
             var informatiecategorieen = await informatiecategorieenTask;
 
-            var urls = new List<Publicatie>();
+            var publicaties = new List<Publicatie>();
 
-            await foreach (var item in GetAllPages(client, DocumentenQueryPath, token))
+            // doorloop alle documenten
+            await foreach (var item in GetAllPages(odrcClient, DocumentenQueryPath, token))
             {
                 var document = item.Deserialize(SitemapPublicatieContext.Default.OdrcDocument);
-                if (document == null ||
-                    !publicaties.TryGetValue(document.Publicatie, out var publicatie) ||
-                    !organisaties.TryGetValue(publicatie.Publisher, out var publisher))
+                // als we de publicatie niet bij het document kunnen vinden, is de publicatie niet bekend of heeft deze niet de status gepubliceerd
+                // dan negeren we het document
+                if (document == null || !gepubliceerdePublicaties.TryGetValue(document.Publicatie, out var publicatie))
                 {
                     continue;
                 }
-                urls.Add(new()
+                publicaties.Add(new()
                 {
                     Loc = new Uri(baseUri, $"{DocumentenRoot}/{document.Uuid}/download").ToString(),
-                    Lastmod = Max(document.LaatstGewijzigdDatum, publicatie.LaatstGewijzigdDatum).ToString("o"),
+                    // we nemen zowel gegevens van het document als van de publicatie over in de sitemap
+                    // het lastmod veld is input voor de crawler om te bepalen of er iets opnieuw geindexeerd moet worden
+                    // de laatste wijzigingsdatum van het document / de publicatie is dus leidend
+                    Lastmod = MaxDateTimeOffset(document.LaatstGewijzigdDatum, publicatie.LaatstGewijzigdDatum).ToString("o"),
                     Document = new()
                     {
                         DiWoo = new()
                         {
-                            Publisher = publisher,
+                            // als we om de een of andere reden geen organisatie kunnen vinden obv van de publisher id, laten we deze leeg
+                            // we voorzien niet dat dit gebeurt maar het is altijd beter om een document met minder metadata te tonen dan helemaal niet
+                            Publisher = organisaties.TryGetValue(publicatie.Publisher, out var publisher)
+                                ? publisher
+                                : null,
                             Titelcollectie = new()
                             {
                                 OfficieleTitel = document.OfficieleTitel,
                             },
                             Classificatiecollectie = new()
                             {
-                                Informatiecategorieen = Lookup(publicatie.InformatieCategorieen, informatiecategorieen).ToArray()
+                                // zoek de informatiecategorieen op obv de ids die in de publicatie staan.
+                                // als we er eentje niet kunnen vinden, negeren we deze
+                                Informatiecategorieen =
+                                    LookupValuesInDictionary(publicatie.InformatieCategorieen, informatiecategorieen)
+                                    .ToArray()
                             },
                             Documenthandelingen = document.Documenthandelingen.Select(x => new Documenthandeling
                             {
@@ -68,26 +85,16 @@ namespace ODBP.Features.Sitemap.SitemapInstances
 
             var model = new SitemapModel
             {
-                Urls = urls
+                Urls = publicaties
             };
 
             return new DiwooXmlResult(model);
         }
 
-        private static IEnumerable<T2> Lookup<T1, T2>(IEnumerable<T1> values, IReadOnlyDictionary<T1, T2> dictionary)
-        {
-            foreach (var item in values)
-            {
-                if (dictionary.TryGetValue(item, out var result))
-                {
-                    yield return result;
-                }
-            }
-        }
-
-        private static DateTimeOffset Max(DateTimeOffset left, DateTimeOffset right) => left > right ? left : right;
-
-        private static async Task<IReadOnlyDictionary<string, ResourceWithValue>> GetWaardelijst(HttpClient client, string path, CancellationToken token)
+        /// <summary>
+        /// Haalt een waardelijst op zodat we de waardes op basis van de id kunnen opzoeken.
+        /// </summary>
+        private static async Task<IReadOnlyDictionary<string, ResourceWithValue>> GetWaardelijstDictionary(HttpClient client, string path, CancellationToken token)
         {
             var result = new Dictionary<string, ResourceWithValue>();
             await foreach (var item in GetAllPages(client, path, token))
@@ -106,7 +113,10 @@ namespace ODBP.Features.Sitemap.SitemapInstances
             return result;
         }
 
-        private static async Task<IReadOnlyDictionary<string, OdrcPublicatie>> GetPublicaties(HttpClient client, CancellationToken token)
+        /// <summary>
+        /// Haalt gepubliceerde publicaties zodat we die op basis van de id kunnen opzoeken.
+        /// </summary>
+        private static async Task<IReadOnlyDictionary<string, OdrcPublicatie>> GetGepubliceerdePublicatieDictionary(HttpClient client, CancellationToken token)
         {
             var result = new Dictionary<string, OdrcPublicatie>();
             await foreach (var item in GetAllPages(client, PublicatiesPath, token))
@@ -120,6 +130,9 @@ namespace ODBP.Features.Sitemap.SitemapInstances
             return result;
         }
 
+        /// <summary>
+        /// Doorloopt alle pagina's van een API-response en retourneert de resultaten.
+        /// </summary>
         private static async IAsyncEnumerable<JsonElement> GetAllPages(HttpClient client, string url, [EnumeratorCancellation] CancellationToken token)
         {
             string? next = null;
@@ -149,6 +162,25 @@ namespace ODBP.Features.Sitemap.SitemapInstances
                 }
             }
         }
+
+        /// <summary>
+        /// Zoekt waardes op in een dictionary op basis van een lijst van sleutels.
+        /// </summary>
+        private static IEnumerable<T2> LookupValuesInDictionary<T1, T2>(IEnumerable<T1> values, IReadOnlyDictionary<T1, T2> dictionary)
+        {
+            foreach (var item in values)
+            {
+                if (dictionary.TryGetValue(item, out var result))
+                {
+                    yield return result;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Retourneert de maximale waarde van twee DateTimeOffsets.
+        /// </summary>
+        private static DateTimeOffset MaxDateTimeOffset(DateTimeOffset left, DateTimeOffset right) => left > right ? left : right;
     }
 
     [JsonSerializable(typeof(OdrcDocument))]

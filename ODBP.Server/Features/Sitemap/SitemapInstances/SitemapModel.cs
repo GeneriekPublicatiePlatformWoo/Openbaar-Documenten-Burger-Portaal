@@ -30,7 +30,7 @@ public class Document
 public class DiWoo
 {
     [XmlElement("publisher")]
-    public required ResourceWithValue Publisher { get; init; }
+    public required ResourceWithValue? Publisher { get; init; }
 
     [XmlElement("titelcollectie")]
     public required Titelcollectie Titelcollectie { get; init; }
