@@ -1,4 +1,5 @@
 ﻿using ODBP.Apis.Odrc;
+using ODBP.Config;
 using ODBP.Features.Sitemap;
 using Serilog;
 using Serilog.Events;
@@ -26,12 +27,24 @@ try
     builder.Services.AddHttpClient();
     builder.Services.AddSingleton<IOdrcClientFactory, OdrcClientFactory>();
     builder.Services.AddBaseUri();
+    builder.Services.AddOutputCache(x=> x.AddPolicy(OutputCachePolicies.Sitemap, 
+        // de sitemap duurt even om te genereren. de cache gaat in als de sitemap klaar is
+        // stel een crawler draait elke dag om 01:00. dan is de sitemap bv om 01:01 klaar en dan gaat de cache in
+        // als de cache dan pas de volgende dag om 01:01 verloopt, krijgt de crawler de volgende dag de gecachete waarde.
+        // daarom maar een uurtje minder lang cachen
+        b=> b.Expire(TimeSpan.FromHours(23))));
 
     var app = builder.Build();
 
     app.UseSerilogRequestLogging(x=> x.Logger = logger);
     app.UseDefaultFiles();
     app.UseOdbpStaticFiles();
+
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseOutputCache();
+    }
+
     app.UseOdbpSecurityHeaders();
 
     app.MapControllers();
