@@ -6,7 +6,7 @@
     <DockerPublishLocally>False</DockerPublishLocally>
     <ProjectGuid>6ba9b6d5-43c7-411a-a68b-bf6338cf60cd</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
+    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/api/sitemap.xml</DockerServiceUrl>
     <DockerServiceName>odbp</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
