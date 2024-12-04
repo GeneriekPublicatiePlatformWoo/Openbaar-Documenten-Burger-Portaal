@@ -49,6 +49,7 @@ namespace ODBP.Features.Sitemap.SitemapInstances
                 {
                     continue;
                 }
+
                 publicaties.Add(new()
                 {
                     Loc = new Uri(baseUri, $"{DocumentenRoot}/{document.Uuid}/download").ToString(),
@@ -60,14 +61,24 @@ namespace ODBP.Features.Sitemap.SitemapInstances
                     {
                         DiWoo = new()
                         {
+                            Creatiedatum = document.Creatiedatum,
                             // als we om de een of andere reden geen organisatie kunnen vinden obv van de publisher id, laten we deze leeg
                             // we voorzien niet dat dit gebeurt maar het is altijd beter om een document met minder metadata te tonen dan helemaal niet
                             Publisher = organisaties.TryGetValue(publicatie.Publisher, out var publisher)
                                 ? publisher
                                 : null,
+                            Opsteller = publicatie.Opsteller != null && organisaties.TryGetValue(publicatie.Opsteller, out var opsteller)
+                                ? opsteller
+                                : null,
+                            Verantwoordelijke = publicatie.Verantwoordelijke != null && organisaties.TryGetValue(publicatie.Verantwoordelijke, out var verantwoordelijke)
+                                ? verantwoordelijke
+                                : null,
+                            Identifiers = string.IsNullOrWhiteSpace(document.Identifier) ? null : [document.Identifier],
+                            Omschrijvingen = string.IsNullOrWhiteSpace(document.Omschrijving) ? null : [document.Omschrijving],
                             Titelcollectie = new()
                             {
                                 OfficieleTitel = document.OfficieleTitel,
+                                VerkorteTitels = string.IsNullOrWhiteSpace(document.Identifier) ? null : [document.Identifier]
                             },
                             Classificatiecollectie = new()
                             {
@@ -200,8 +211,11 @@ namespace ODBP.Features.Sitemap.SitemapInstances
         public required string Uuid { get; set; }
         public required string Publicatie { get; set; }
         public required string OfficieleTitel { get; set; }
+        public required string Identifier { get; set; }
         public required DateTimeOffset LaatstGewijzigdDatum { get; set; }
         public required IReadOnlyList<OdrcDocumentHandeling> Documenthandelingen { get; set; }
+        public required string Creatiedatum { get; set; }
+        public string? Omschrijving { get; set; }
     }
 
     public class OdrcPublicatie
@@ -209,6 +223,7 @@ namespace ODBP.Features.Sitemap.SitemapInstances
         public required string Uuid { get; set; }
         public required string Publisher { get; set; }
         public string? Verantwoordelijke { get; set; }
+        public string? Opsteller { get; set; }
         public required DateTimeOffset LaatstGewijzigdDatum { get; set; }
         public required IReadOnlyList<string> InformatieCategorieen { get; set; }
     }
