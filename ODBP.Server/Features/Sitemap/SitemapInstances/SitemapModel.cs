@@ -32,8 +32,25 @@ public class Document
 
 public class DiWoo
 {
+    [XmlElement("creatiedatum")]
+    public required string Creatiedatum { get; set; }
+
+    [XmlArray("identifiers")]
+    [XmlArrayItem("identifier")]
+    public required string[]? Identifiers { get; set; }
+
     [XmlElement("publisher")]
     public required ResourceWithValue? Publisher { get; init; }
+
+    [XmlElement("verantwoordelijke")]
+    public required ResourceWithValue? Verantwoordelijke { get; init; }
+
+    [XmlElement("opsteller")]
+    public required ResourceWithValue? Opsteller { get; init; }
+
+    [XmlArray("omschrijvingen")]
+    [XmlArrayItem("omschrijving")]
+    public required string[]? Omschrijvingen { get; set; }
 
     [XmlElement("titelcollectie")]
     public required Titelcollectie Titelcollectie { get; init; }
@@ -50,6 +67,10 @@ public class Titelcollectie
 {
     [XmlElement("officieleTitel")]
     public required string OfficieleTitel { get; init; }
+
+    [XmlArray("verkorteTitels")]
+    [XmlArrayItem("verkorteTitel")]
+    public required string[]? VerkorteTitels { get; init; }
 }
 
 public class Classificatiecollectie

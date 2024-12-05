@@ -27,12 +27,19 @@ try
     builder.Services.AddHttpClient();
     builder.Services.AddSingleton<IOdrcClientFactory, OdrcClientFactory>();
     builder.Services.AddBaseUri();
+
+    // de sitemap duurt even om te genereren. de cache gaat in als de sitemap klaar is
+    // stel een crawler draait elke dag om 01:00. dan is de sitemap bv om 01:01 klaar en dan gaat de cache in
+    // als de cache dan pas de volgende dag om 01:01 verloopt, krijgt de crawler de volgende dag de gecachete waarde.
+    // daarom maar een uurtje minder lang cachen
+    const int DefaultCacheExpiryHours = 23;
+    
+    var cacheExpiryHours = double.TryParse(builder.Configuration["SITEMAP_CACHE_DURATION_HOURS"], out var d) 
+        ? d 
+        : DefaultCacheExpiryHours;
+
     builder.Services.AddOutputCache(x=> x.AddPolicy(OutputCachePolicies.Sitemap, 
-        // de sitemap duurt even om te genereren. de cache gaat in als de sitemap klaar is
-        // stel een crawler draait elke dag om 01:00. dan is de sitemap bv om 01:01 klaar en dan gaat de cache in
-        // als de cache dan pas de volgende dag om 01:01 verloopt, krijgt de crawler de volgende dag de gecachete waarde.
-        // daarom maar een uurtje minder lang cachen
-        b=> b.Expire(TimeSpan.FromHours(23))));
+        b=> b.Expire(TimeSpan.FromHours(cacheExpiryHours))));
 
     var app = builder.Build();
 
