@@ -78,7 +78,7 @@ namespace ODBP.Features.Sitemap.SitemapInstances
                             Titelcollectie = new()
                             {
                                 OfficieleTitel = document.OfficieleTitel,
-                                VerkorteTitels = string.IsNullOrWhiteSpace(document.Identifier) ? null : [document.Identifier]
+                                VerkorteTitels = string.IsNullOrWhiteSpace(document.VerkorteTitel) ? null : [document.VerkorteTitel]
                             },
                             Classificatiecollectie = new()
                             {
@@ -211,6 +211,7 @@ namespace ODBP.Features.Sitemap.SitemapInstances
         public required string Uuid { get; set; }
         public required string Publicatie { get; set; }
         public required string OfficieleTitel { get; set; }
+        public string? VerkorteTitel { get; set; }
         public required string Identifier { get; set; }
         public required DateTimeOffset LaatstGewijzigdDatum { get; set; }
         public required IReadOnlyList<OdrcDocumentHandeling> Documenthandelingen { get; set; }
