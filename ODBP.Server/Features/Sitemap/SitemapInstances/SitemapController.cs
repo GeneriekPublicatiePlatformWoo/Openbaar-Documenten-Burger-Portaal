@@ -85,7 +85,7 @@ namespace ODBP.Features.Sitemap.SitemapInstances
                                 // zoek de informatiecategorieen op obv de ids die in de publicatie staan.
                                 // als we er eentje niet kunnen vinden, negeren we deze
                                 Informatiecategorieen =
-                                    LookupValuesInDictionary(publicatie.InformatieCategorieen, informatiecategorieen)
+                                    LookupValuesInDictionary(publicatie.DiWooInformatieCategorieen, informatiecategorieen)
                                     .ToArray()
                             },
                             Documenthandelingen = document.Documenthandelingen.Select(x => new Documenthandeling
@@ -226,7 +226,7 @@ namespace ODBP.Features.Sitemap.SitemapInstances
         public string? Verantwoordelijke { get; set; }
         public string? Opsteller { get; set; }
         public required DateTimeOffset LaatstGewijzigdDatum { get; set; }
-        public required IReadOnlyList<string> InformatieCategorieen { get; set; }
+        public required IReadOnlyList<string> DiWooInformatieCategorieen { get; set; }
     }
 
     public class OdrcDocumentHandeling
